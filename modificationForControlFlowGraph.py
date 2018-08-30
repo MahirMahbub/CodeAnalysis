@@ -110,13 +110,17 @@ def function_seperation(text):
 
 def flow_sequence(text_list):
     sequence_dict = [[]]
+    all_dict = {}
     #print(text_list)
     final_list = []
-    identifier = [("start", 0)]
+    identifier = [("main stream", 0)]
+    #identifier = []
     if_found = -1
     index = 0
-    #final = []
+    test = []
+    main_st = set()
     #print(text_list)
+
     for index, line in enumerate(text_list):
         if index == 0:
             continue
@@ -124,26 +128,31 @@ def flow_sequence(text_list):
             sequence_dict.append([])
             identifier.append(("if", index))
             if_found = index
-        if "for " in line :
+            #test = simple_line(all_dict, test)
+        elif "for " in line :
             sequence_dict.append([])
             identifier.append(("for", index))
-        if "do " in line :
+            #test = simple_line(all_dict, test)
+        elif "do " in line :
             sequence_dict.append([])
             identifier.append(("do", index))
-        if 'while ' in line:
+            #test = simple_line(all_dict, test)
+        elif 'while ' in line:
             sequence_dict.append([])
             identifier.append(("while", index))
-
-        if 'else if ' in  line :
+            #test = simple_line(all_dict, test)
+        elif 'else if ' in  line :
             if not if_found == -1:
                 sequence_dict.append([if_found])
                 identifier.append(("else if", index))
+                #test = simple_line(all_dict, test)
         elif 'else' in line:
             if not if_found == -1:
                 sequence_dict.append([if_found])
                 if_found = -1
                 identifier.append(("else", index))
-        if '}' in line:
+                #test = simple_line(all_dict, test)
+        elif '}' in line:
             for i in sequence_dict:
                 i.append(index)
                 #print(index)
@@ -159,26 +168,32 @@ def flow_sequence(text_list):
                 #final.insert(-2,index+1)
                 #final.append(index)
                 final.append(final[0])
-            if iden[0] == "while":
+
+            elif iden[0] == "while":
                 final.append(final[0])
                 final.append(index + 1)
-            if iden[0] == "do":
+            elif iden[0] == "do":
                 final.append(final[0])
                 final.append(index + 1)
+            if all_dict.get(iden[0], "NA") == "NA":
+                all_dict[iden[0]] = []
+                all_dict[iden[0]].append(final)
+            else:
+                all_dict[iden[0]].append(final)
             final_list.append(final)
         else:
             for i in sequence_dict:
                 #print(index+1)
                 i.append(index)
-                #print("
+            #test.append(index)
 
-
-                # Sequence" + str(sequence_dict))
-    #
     for i in sequence_dict:
         i.append(index+1)
     for i in sequence_dict:
+        #print("Seq", sequence_dict)
         final_list.append(i)
+    print("Final", all_dict)
+    #all_dict["main stream"] = sequence_dict[0]
 
 
         # elif 'break' in line:
@@ -201,12 +216,24 @@ def flow_sequence(text_list):
         #         pass
         #     big = sorted(mini)[-1]
     print(text_list)
-    print(final_list)
+    #print(*final_list, sep='\n')
+    #print(final_list)
 
     #
     #
     # sequence_dict.pop()
     # final_list.append(identifier.pop())
+
+
+def simple_line(all_dict, test):
+    if all_dict.get("main stream", "NA") == "NA":
+        all_dict["main stream"] = []
+        all_dict["main stream"].append(test)
+    else:
+        all_dict["main stream"].append(test)
+    test = []
+    return test
+
 
 def control_flow_graph(function_body_dict):
     for key, funcbody in function_body_dict.items():

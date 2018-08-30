@@ -53,10 +53,12 @@ public class Hyp
 			for(int j=0; j<57; j++)
 			{
 				int a = (int)Math.round((elm[i][j]-min[j])/(max[j]-min[j])*rng);
-				if(elm[i][57]==1)	
-					countS[a][j]++;
-				else	
+				if(elm[i][57]==1){					
+				countS[a][j]++;
+				}
+				else{					
 					countH[a][j]++;
+				}
 			}
 		}
 		
@@ -84,8 +86,7 @@ public class Hyp
 			else if(cmp<thresh & elm[i][57]==1){	
 				wrong++;
 			}
-			else 
-			{
+			else{
 				right++;
 			}
 		}
