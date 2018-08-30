@@ -20,8 +20,15 @@ public class Hyp
 	}
 	public void add(double [] ext)
 	{
-		for(int i=0; i<58; i++)	
+		for(int i=0; i<58; i++){
 			elm[n][i]=ext[i];
+			if(df){
+				ddf;
+			}
+			else{
+			vx';
+			}
+		}
 		n++;
 	}
 	public void print()

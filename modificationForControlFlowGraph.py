@@ -112,48 +112,57 @@ def flow_sequence(text_list):
     sequence_dict = [[]]
     #print(text_list)
     final_list = []
-    identifier = []
+    identifier = [("start", 0)]
     if_found = -1
     index = 0
+    #final = []
+    #print(text_list)
     for index, line in enumerate(text_list):
         if index == 0:
             continue
-        if " if " in line and  not "else if" in line:
-            sequence_dict.append([index])
-            identifier.append("if")
-            if_found = index+1
+        if "if " in line and  not "else if " in line:
+            sequence_dict.append([])
+            identifier.append(("if", index))
+            if_found = index
         if "for " in line :
-            sequence_dict.append([index])
-            identifier.append("for")
+            sequence_dict.append([])
+            identifier.append(("for", index))
         if "do " in line :
-            sequence_dict.append([index])
-            identifier.append("do")
+            sequence_dict.append([])
+            identifier.append(("do", index))
         if 'while ' in line:
-            sequence_dict.append([index])
-            identifier.append("while")
+            sequence_dict.append([])
+            identifier.append(("while", index))
 
         if 'else if ' in  line :
             if not if_found == -1:
-                sequence_dict.append([if_found, index])
-                identifier.append("else if")
-        elif 'else ' in line:
+                sequence_dict.append([if_found])
+                identifier.append(("else if", index))
+        elif 'else' in line:
             if not if_found == -1:
-                sequence_dict.append([if_found, index])
+                sequence_dict.append([if_found])
                 if_found = -1
-                identifier.append("else")
+                identifier.append(("else", index))
         if '}' in line:
+            for i in sequence_dict:
+                i.append(index)
+                #print(index)
             try:
+                iden = identifier.pop()
                 final = sequence_dict.pop()
-            except IndexError:
-                pass
-            if identifier == "for":
 
-                final.append(index+1)
+            except IndexError:
+                continue
+
+            if iden[0] == "for":
+                #print("YEAH", index+1)
+                #final.insert(-2,index+1)
+                #final.append(index)
                 final.append(final[0])
-            if identifier == "while":
+            if iden[0] == "while":
                 final.append(final[0])
                 final.append(index + 1)
-            if identifier == "do":
+            if iden[0] == "do":
                 final.append(final[0])
                 final.append(index + 1)
             final_list.append(final)
@@ -161,11 +170,15 @@ def flow_sequence(text_list):
             for i in sequence_dict:
                 #print(index+1)
                 i.append(index)
-                #print("Sequence" + str(sequence_dict))
+                #print("
+
+
+                # Sequence" + str(sequence_dict))
+    #
+    for i in sequence_dict:
+        i.append(index+1)
     for i in sequence_dict:
         final_list.append(i)
-    for i in final_list:
-        i.append(index)
 
 
         # elif 'break' in line:
@@ -187,6 +200,7 @@ def flow_sequence(text_list):
         #     except IndexError:
         #         pass
         #     big = sorted(mini)[-1]
+    print(text_list)
     print(final_list)
 
     #
